@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <canvas id="c"></canvas>
+
+
+    <script type="text/javascript">
+
+        function main() {
+
+            var canvas = document.querySelector('#c');
+
+            var gl = canvas.getContext('webgl');
+            if (!gl){
+                alert('不支持webgl');
+                return;
+            }
+
+            const vsSource = `
+            attribute vec4 a_position;
+
+            void main(){
+                gl_Position =a_position;
+
+            }`;
+
+            const fsSource = `
+            precision mediump float;
+
+            void main(){
+                gl_FragColor = vec4(1,0,0.5,1);
+            }`;
+
+            /**
+             * 创建着色器
+             * @param gl
+             * @param type
+             * @param source
+             * @returns {WebGLShader}
+             */
+            function createShader(gl,type,source) {
+                var shader = gl.createShader(type);
+                console.log(shader);
+                gl.shaderSource(shader,source);
+                console.log(shader);
+                gl.compileShader(shader);
+                var success = gl.getShaderParameter(shader,gl.COMPILE_STATUS);
+                if (success){
+                    return shader
+                }
+
+                console.log(gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+            }
+
+            var vertexShaderSource = createShader(gl,gl.VERTEX_SHADER,vsSource);
+            var fragmentShaderSource = createShader(gl,gl.FRAGMENT_SHADER,fsSource);
+
+            function createProgram(gl, vertexShader, fragmentShader) {
+
+            }
+        }
+
+
+    </script>
+</body>
+</html>
