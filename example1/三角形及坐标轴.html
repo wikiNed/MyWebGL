@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-    <canvas id="c"></canvas>
+    <canvas id="c" width="500" height="400"></canvas>
 
 
     <script type="text/javascript">
@@ -22,10 +22,20 @@
             }
 
             const vsSource = `
-            attribute vec4 a_position;
+            attribute vec2 a_position;
+
+            uniform vec2 u_resolution;
 
             void main(){
-                gl_Position =a_position;
+                // 从像素坐标转换到 0.0 到 1.0
+                vec2 zeroToOne = a_position / u_resolution;
+                // 再把 0->1 转换 0->2
+                vec2 zeroToTwo = zeroToOne * 2.0;
+                // 把 0->2 转换到 -1->+1 (裁剪空间)
+                vec2 clipSpace = zeroToTwo - 1.0;
+
+
+                gl_Position = vec4(clipSpace, 0, 1);
 
             }`;
 
@@ -81,7 +91,7 @@
             }
 
             var program = createProgram(gl,vertexShader,fragmentShader);
-
+            var resolutionUniformLocation = gl.getUniformLocation(program,"u_resolution");
             /**
              * 创建缓冲并存入数据
              * @type {GLint}
@@ -92,9 +102,12 @@
             gl.bindBuffer(gl.ARRAY_BUFFER,positionBuffer);
             console.log(positionBuffer);
             var positions = [
-                0,0,
-                0,0.5,
-                0.7,0,
+                10,20,
+                80,20,
+                10,30,
+                10,30,
+                80,20,
+                80,30
             ];
             gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(positions),gl.STATIC_DRAW);
 
@@ -102,7 +115,9 @@
              * 渲染部分
              */
             // webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+            console.log(gl.canvas.width,gl.canvas.height);
+            gl.viewport(0,0,gl.canvas.width, gl.canvas.height);
+
 
             // 清空画布
             gl.clearColor(0, 0, 0, 0);
@@ -123,10 +138,12 @@
             var offset = 0;        // 从缓冲起始位置开始读取
             gl.vertexAttribPointer(
                 positionAttrLocation, size, type, normalize, stride, offset);
+
+            gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
             //按三角形绘制
             var primitiveType = gl.TRIANGLES;
             var offset = 0;
-            var count = 3;
+            var count = 6;
             gl.drawArrays(primitiveType, offset, count);
         }
 
