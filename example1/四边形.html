@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>矩形</title>
 </head>
 <body>
 <canvas id="c" width="500" height="400"></canvas>
@@ -103,7 +103,7 @@
         var positionBuffer = gl.createBuffer();
 
         gl.bindBuffer(gl.ARRAY_BUFFER,positionBuffer);
-        console.log(positionBuffer);
+
         var positions = [
             10,20,
             80,20,
@@ -144,21 +144,26 @@
 
         gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
 
+        setRectangle(
+            gl, randomInt(300), randomInt(300), randomInt(300), randomInt(300));
 
-        for (let ii = 0; ii < 50; ++ii) {
-            // 创建一个随机矩形
-            // 并将写入位置缓冲
-            // 因为位置缓冲是我们绑定在
-            // `ARRAY_BUFFER`绑定点上的最后一个缓冲
-            setRectangle(
-                gl, randomInt(300), randomInt(300), randomInt(300), randomInt(300));
+        gl.uniform4f(colorUniformLocation, Math.random(), Math.random(), Math.random(), 1);
 
-            // 设置一个随机颜色
-            gl.uniform4f(colorUniformLocation, Math.random(), Math.random(), Math.random(), 1);
-
-            // 绘制矩形
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
-        }
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        // for (let ii = 0; ii < 50; ++ii) {
+        //     // 创建一个随机矩形
+        //     // 并将写入位置缓冲
+        //     // 因为位置缓冲是我们绑定在
+        //     // `ARRAY_BUFFER`绑定点上的最后一个缓冲
+        //     setRectangle(
+        //         gl, randomInt(300), randomInt(300), randomInt(300), randomInt(300));
+        //
+        //     // 设置一个随机颜色
+        //     gl.uniform4f(colorUniformLocation, Math.random(), Math.random(), Math.random(), 1);
+        //
+        //     // 绘制矩形
+        //     gl.drawArrays(gl.TRIANGLES, 0, 6);
+        // }
     }
 
     // 返回 0 到 range 范围内的随机整数
