@@ -27,8 +27,8 @@ var blurX = new Cesium.PostProcessStage({
     name : 'blur_x_direction',
     fragmentShader : fragmentShaderSource,
     uniforms: {
-        width : 100,
-        height : 100,
+        width : width,
+        height : height,
         colorTexture1:"Bright"
     }
 });
